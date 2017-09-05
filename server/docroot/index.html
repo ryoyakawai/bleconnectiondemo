@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <title>BLE Connection DEMO</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+     body { font-family: arial; }
+     #actheartbeatled { size: 1.2em; }
+    </style>
+  </head>
+  <body>
+    <h2>Heatbeat Blinking App</h2>
+    <ul>
+      <li>PWR LED: <button id="pwrheartbeatled">Start</button></li>
+      <li>ACT LED: <button id="actheartbeatled">Start</button></li>
+    </ul>
+
+    <script type="text/javascript">
+     let state={
+         act: false,
+         pwr: false
+     };
+     document.querySelector('#pwrheartbeatled').addEventListener('mousedown', () => {
+         let path;
+         switch(state.pwr) {
+             case false:
+                 state.pwr = true;
+                 path = '/api/startpwrheartbeatled';
+                 break;
+             case true:
+                 state.pwr = false;
+                 path = '/api/stoppwrheartbeatled';
+                 break;
+         }
+         execBlink(path, '#pwrheartbeatled', state.pwr);
+     });
+     document.querySelector('#actheartbeatled').addEventListener('mousedown', () => {
+         let path;
+         switch(state.act) {
+             case false:
+                 state.act = true;
+                 path = '/api/startactheartbeatled';
+                 break;
+             case true:
+                 state.act = false;
+                 path = '/api/stopactheartbeatled';
+                 break;
+         }
+         execBlink(path, '#actheartbeatled', state.act);
+     });
+
+     function execBlink(path, elem, state) {
+         getData(path, (data) => {
+             if(data.status==true && data.result==true) {
+                 document.querySelector(elem).innerHTML = 
+                     (state==true) ? 'Stop' : 'Start';;
+             } else {
+                 console.error('[Failed] execbBlink(), path: ' + path);
+             }
+         });
+     }
+     function getData(path, callback) {
+         fetch( path, {
+             method: 'get'
+         }).then( res => {
+             if(res.status !== 200) {
+                 console.log("ERROR: Status Code: " + res.status);
+                 return;
+             }
+             res.json().then( data => {
+                 callback(data);
+             });
+         }).catch( err => {
+             console.log(err);
+         });
+
+     }
+     
+    </script>
+
+  </body>
+</html>

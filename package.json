@@ -1,0 +1,22 @@
+{
+    "name": "bleconnectiondemo",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "bleno": "^0.4.2",
+        "eddystone-beacon": "^1.0.7",
+        "express": "^4.15.3",
+        "node-libcurl": "^1.2.0",
+        "npm-generator": "^0.1.5",
+        "os": "^0.1.1",
+        "rpi-leds": "0.0.3"
+    },
+    "optionalDependencies": {},
+    "keywords": [],
+    "author": "Ryoya Kawai <ryoya.kawai@gmail.com>",
+    "license": "Apache-2.0"
+}

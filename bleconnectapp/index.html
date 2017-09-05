@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <style>
+     body { font-family: arial }
+     .searchdata { font-family: monospace }
+     button, div#configurationlink { margin-left: 10px }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript" src="register_sw.js"></script>
+    <h2>Get URL of Raspbery Pi's Management Console</h2>
+    <div>
+      <b>[Connect to device]</b><br><br>
+      <button id="searchdevice">Connect</button>
+    </div>
+    <br><br>
+    <div>
+      <b>[Connect to this device]</b><br>
+      <ul>
+        <li>Name: <span id="name" class="searchdata"></span></li>
+        <li>UUID
+          <ul>
+            <li>Service: <span id="serviceUUID" class="searchdata"></span></li>
+            <li>Characteristic: <span id="charaUUID00" class="searchdata"></span></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <br><br>
+
+    <div>
+      <b>[Raspbery Pi's Management Console]</b><br><br>
+      <div id="configurationlink">------</div>
+    </div>
+
+    <script type="text/javascript">
+     let name = 'bleconndemo';
+     let uuid = {
+         service: ('148c0888-eedc-4bed-b59e-9718382af1c0'.toLowerCase()),
+         chara00: ('148c0888-eedc-4bed-b59e-9718382af1c1').toLowerCase()
+     };
+     let ip = null;
+     let port = 11011;
+     let gattDevice;
+     let state = false;
+     
+     document.querySelector('#name').innerHTML=name;
+     document.querySelector('#serviceUUID').innerHTML=uuid.service;
+     document.querySelector('#charaUUID00').innerHTML=uuid.chara00;
+     document.querySelector('#searchdevice').addEventListener('mousedown', connection);
+
+     function connection() {
+         switch(state) {
+             case true:
+                 state = false;
+                 gattDevice.disconnect();
+                 console.log('[Device disconnected]');
+                 document.querySelector('#searchdevice').innerHTML='Connect';
+                 break;
+             case false:
+                 state = true;
+                 let options = {
+                     filters: [{
+                         services: [uuid.service],
+                     }]
+                 };
+                 let timerId = setInterval(() => {
+                     if(ip != null && port != null) {
+                         clearInterval(timerId);
+                         var aref = document.createElement('a');
+                         aref.href='http://'+ip + ':' + port + '/';
+                         aref.innerHTML='Click to jump to management console.';
+                         let linkElem = document.querySelector('#configurationlink');
+                         linkElem.innerHTML='';
+                         linkElem.appendChild(aref);
+                         console.log('[Server Address] ' + ip + ':' + port);
+                     }
+                 }, 500);
+                 navigator.bluetooth.requestDevice(options)
+                          .then( device => {
+                              console.log('[Received device list.]', device);
+                              document.querySelector('#searchdevice').innerHTML='disconnect';
+                              gattDevice=device.gatt;
+                              return device.gatt.connect();
+                          })
+                          .then( server => {
+                              console.log('[Connected to GATT Server.]', server);
+                              return server.getPrimaryService(uuid.service);
+                          })
+                          .then( service => {
+                              console.log('[Reveiced service list]', service);
+                              service.getCharacteristic(uuid.chara00)
+                                     .then( chara => {
+                                         return chara.readValue();
+                                     })
+                                     .then( value => {
+                                         ip=value.getUint8(0) + '.' + value.getUint8(1) + '.' + value.getUint8(2) + '.' + value.getUint8(3);
+                                         console.log('[ip] ' + ip);
+                                         console.log('[port] ' + port);
+                                     });
+                              return;
+                          })
+                          .catch( error => {
+                              console.log('[ERROR]', error);
+                          });
+                 break;
+         }
+     }
+
+
+    </script>
+
+  </body>
+</html>
