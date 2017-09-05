@@ -9,5 +9,5 @@
     }],
     "display": "standalone",
     "orientation": "portrait",
-    "start_url": "https://webmusicdevelopers.appspot.com/demo/webbluetooth/00/index.html"
+    "start_url": "https://ryoyakawai.github.io/bleconnectiondemo/bleconnectapp/"
 }
