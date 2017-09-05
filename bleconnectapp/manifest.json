@@ -3,7 +3,7 @@
     "name": "BLE Connection Demo",
     "short_name": "BLE Con Demo",
     "icons": [{
-        "src": "./images/connectionapp_144x144.png",
+        "src": "connectionapp_144x144.png",
         "sizes": "144x144",
         "type": "image/png"
     }],
