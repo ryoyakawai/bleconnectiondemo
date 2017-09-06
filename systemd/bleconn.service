@@ -1,0 +1,12 @@
+[Unit]
+Description=BluetoothConnectionDemo
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/Source/bleconnectiondemo
+ExecStart=/usr/local/bin/node /home/pi/Source/bleconnectiondemo/index.js
+Restart = always
+RestartSec=20
+
+[Install]
+WantedBy = multi-user.target bluetooth.target network.target

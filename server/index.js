@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 **/
-
 let webPort=11011;
+
+let cwd=process.cwd();
 
 let utils = require('./js/utils.js');
 utils.init();
@@ -23,6 +24,7 @@ let rpiLeds = require('rpi-leds');
 let leds = new rpiLeds();
 
 let serverConf = {};
+console.log(utils.getSelfIPv4Addr());
 serverConf.ip = ((utils.getSelfIPv4Addr()).pop())['address'],
 serverConf.port = webPort,
 serverConf.url = 'http://' + serverConf.ip + ':' + serverConf.port + '/';
@@ -65,5 +67,8 @@ app.get("/api/stopactheartbeatled", (req, res, next) => {
 });
 
 // establish Web Server(Doc)
-app.use('/', express.static('server/docroot/index.html'));
-app.use(express.static('server/docroot'));
+console.log(cwd + '/server/docroot/index.html');
+console.log(cwd + '/server/docroot');
+
+app.use('/', express.static(cwd + '/server/docroot/index.html'));
+app.use(express.static(cwd + '/server/docroot'));

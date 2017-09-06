@@ -11,7 +11,6 @@
         "eddystone-beacon": "^1.0.7",
         "express": "^4.15.3",
         "forever": "^0.15.3",
-        "node-libcurl": "^1.2.0",
         "npm-generator": "^0.1.5",
         "os": "^0.1.1",
         "rpi-leds": "0.0.3"
