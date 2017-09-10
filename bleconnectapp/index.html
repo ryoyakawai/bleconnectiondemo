@@ -18,7 +18,6 @@
     <div>
       <b>[Connect to this device]</b><br>
       <ul>
-        <li>Name: <span id="name" class="searchdata"></span></li>
         <li>UUID
           <ul>
             <li>Service: <span id="serviceUUID" class="searchdata"></span></li>
@@ -35,17 +34,22 @@
     </div>
 
     <script type="text/javascript">
-     let name = 'bleconndemo';
+     let searchParams = new URLSearchParams(window.location.search);
+     let query_uuid_service = searchParams.get('s');
+     let query_uuid_chara00 = searchParams.get('c00');
+     
      let uuid = {
          service: ('148c0888-eedc-4bed-b59e-9718382af1c0'.toLowerCase()),
          chara00: ('148c0888-eedc-4bed-b59e-9718382af1c1').toLowerCase()
      };
+     if(query_uuid_service!=null) uuid.service = query_uuid_service;
+     if(query_uuid_chara00!=null) uuid.chara00 = query_uuid_chara00;
+          
      let ip = null;
      let port = 11011;
      let gattDevice;
      let state = false;
      
-     document.querySelector('#name').innerHTML=name;
      document.querySelector('#serviceUUID').innerHTML=uuid.service;
      document.querySelector('#charaUUID00').innerHTML=uuid.chara00;
      document.querySelector('#searchdevice').addEventListener('mousedown', connection);
