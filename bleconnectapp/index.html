@@ -5,6 +5,10 @@
      body { font-family: arial }
      .searchdata { font-family: monospace }
      button, div#configurationlink { margin-left: 10px }
+     .hidden-none {
+       visibility: hidden;
+       display: none;
+     }
     </style>
   </head>
   <body>
@@ -15,8 +19,9 @@
       <button id="searchdevice">Connect</button>
     </div>
     <br><br>
+
     <div>
-      <b>[Connect to this device]</b><br>
+      <b>[Connect device infomation]</b><br>
       <ul>
         <li>UUID
           <ul>
@@ -26,6 +31,22 @@
         </li>
       </ul>
     </div>
+
+
+   <br><br>
+    <div id="wificonfig" class="">
+      <b>[Input Wi-Fi AP & Pass]</b><br>
+      <ul>
+          <ul>
+            <li>AP Name: <input id="wifi-apname" value="kasu2-station"></li>
+            <li>Password: <input id="wifi-pass"  value="creatingKANDOtogether"></li>
+          </ul>
+        </li>
+      </ul>
+      <button id="connecttowifi">Connect</button>
+      <button id="disconnectfromwifi">Disconnect</button>
+    </div>
+
     <br><br>
 
     <div>
@@ -33,6 +54,8 @@
       <div id="configurationlink">------</div>
     </div>
 
+    <script type="text/javascript" src="encode/encoding-indexes.js"></script>
+    <script type="text/javascript" src="encode/encoding.js"></script>
     <script type="text/javascript">
      let searchParams = new URLSearchParams(window.location.search);
      let query_uuid_service = searchParams.get('s');
@@ -40,20 +63,42 @@
      
      let uuid = {
          service: ('148c0888-eedc-4bed-b59e-9718382af1c0'.toLowerCase()),
-         chara00: ('148c0888-eedc-4bed-b59e-9718382af1c1').toLowerCase()
+         chara00: ('148c0888-eedc-4bed-b59e-9718382af1c1').toLowerCase(),
+         chara01: ('148c0888-eedc-4bed-b59e-9718382af1c2').toLowerCase(),
+         chara02: ('148c0888-eedc-4bed-b59e-9718382af1c3').toLowerCase(),
+         chara03: ('148c0888-eedc-4bed-b59e-9718382af1c4').toLowerCase()
      };
      if(query_uuid_service!=null) uuid.service = query_uuid_service;
      if(query_uuid_chara00!=null) uuid.chara00 = query_uuid_chara00;
-          
+
      let ip = null;
      let port = 11011;
      let gattDevice;
      let state = false;
-     
+     let charaArray = new Array();
+     let encoding = 'utf-8';
+
      document.querySelector('#serviceUUID').innerHTML=uuid.service;
      document.querySelector('#charaUUID00').innerHTML=uuid.chara00;
      document.querySelector('#searchdevice').addEventListener('mousedown', connection);
+     document.querySelector('#connecttowifi').addEventListener('mousedown', connecttowifi);
+     document.querySelector('#disconnectfromwifi').addEventListener('mousedown', disconnectfromwifi);
 
+     function disconnectfromwifi() {
+         // charactristicで消す？
+     }
+     
+     function connecttowifi() {
+         let apName=document.querySelector('#wifi-apname').value;
+         let apPass=document.querySelector('#wifi-pass').value;
+
+         let ap_name_pass=apName + "\t" + apPass;
+         let string = new TextEncoder(encoding).encode(ap_name_pass);
+         return charaArray[2].writeValue(string).then( () => {
+             console.log('DONE');
+         });
+     }
+          
      function connection() {
          switch(state) {
              case true:
@@ -72,12 +117,17 @@
                  let timerId = setInterval(() => {
                      if(ip != null && port != null) {
                          clearInterval(timerId);
-                         var aref = document.createElement('a');
-                         aref.href='http://'+ip + ':' + port + '/';
-                         aref.innerHTML='Click to jump to management console.';
-                         let linkElem = document.querySelector('#configurationlink');
-                         linkElem.innerHTML='';
-                         linkElem.appendChild(aref);
+                         if(ip=='0.0.0.0') {
+                             let elem=document.querySelector('#wificonfig');
+                             elem.className = elem.className.replace('hidden-none', '').replace('  ', ' ');
+                         } else {
+                             var aref = document.createElement('a');
+                             aref.href='http://'+ip + ':' + port + '/';
+                             aref.innerHTML='Click to jump to management console.';
+                             let linkElem = document.querySelector('#configurationlink');
+                             linkElem.innerHTML='';
+                             linkElem.appendChild(aref);
+                         }
                          console.log('[Server Address] ' + ip + ':' + port);
                      }
                  }, 500);
@@ -93,17 +143,41 @@
                               return server.getPrimaryService(uuid.service);
                           })
                           .then( service => {
+                              Promise.all([
+                                  service.getCharacteristic(uuid.chara00)
+                                         .then( (chara) => {
+                                             charaArray[0] = chara;
+                                             console.log('[Chara00] ', chara);
+                                         }),
+                                  service.getCharacteristic(uuid.chara01)
+                                         .then( (chara) => {
+                                             charaArray[1] = chara;
+                                             console.log('[Chara01] ', chara);
+                                             let string = new TextEncoder(encoding).encode('requestHeader');
+                                             console.log(charaArray[1].writeValue(string));
+/*
+                                             charaArray[1].readValue().then( data => {
+                                                 let string = new TextDecoder(encoding).decode(data.buffer);
+
+                                                 //console.log('[[[[[[AAAA]]]]]]', string, large_buffer_to_string(data));
+                                                 console.log('[[[[[[AAAA]]]]]]', string);
+
+                                             });
+*/
+                                         }),
+                                  service.getCharacteristic(uuid.chara02)
+                                         .then( (chara) => {
+                                             charaArray[2] = chara;
+                                             console.log('[Chara02] ', chara);
+                                         }),
+                                  service.getCharacteristic(uuid.chara03)
+                                         .then( (chara) => {
+                                             charaArray[3] = chara;
+                                             console.log('[Chara03] ', chara);
+                                         }),
+                                  
+                              ])
                               console.log('[Reveiced service list]', service);
-                              service.getCharacteristic(uuid.chara00)
-                                     .then( chara => {
-                                         return chara.readValue();
-                                     })
-                                     .then( value => {
-                                         ip=value.getUint8(0) + '.' + value.getUint8(1) + '.' + value.getUint8(2) + '.' + value.getUint8(3);
-                                         console.log('[ip] ' + ip);
-                                         console.log('[port] ' + port);
-                                     });
-                              return;
                           })
                           .catch( error => {
                               console.log('[ERROR]', error);

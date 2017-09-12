@@ -13,6 +13,7 @@
         "forever": "^0.15.3",
         "npm-generator": "^0.1.5",
         "os": "^0.1.1",
+        "pi-wifi": "^1.2.0",
         "rpi-leds": "0.0.3"
     },
     "optionalDependencies": {},
