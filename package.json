@@ -8,12 +8,17 @@
     },
     "dependencies": {
         "bleno": "^0.4.2",
+        "bower": "^1.8.0",
         "eddystone-beacon": "^1.0.7",
+        "emitter": "0.0.5",
         "express": "^4.15.3",
         "forever": "^0.15.3",
         "npm-generator": "^0.1.5",
         "os": "^0.1.1",
-        "rpi-leds": "0.0.3"
+        "pi-wifi": "^1.2.0",
+        "rpi-leds": "0.0.3",
+        "text-encoding": "^0.6.4",
+        "usb": "^1.2.0"
     },
     "optionalDependencies": {},
     "keywords": [],

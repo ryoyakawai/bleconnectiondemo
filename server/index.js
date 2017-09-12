@@ -41,6 +41,10 @@ let ip = serverConf.ip,
 blepe.init(name, uuid, ip, port);
 blepe.start();
 
+// wifi
+let wifi = require('./js/wificonfig.js');
+wifi.init();
+
 // establish Web Server(API)
 let express = require('express');
 let app = express();
@@ -48,22 +52,39 @@ let server = app.listen(serverConf.port, () => {
     console.log('[Server Started] ' + serverConf.url);
 });
 
-app.get("/api/startpwrheartbeatled", (req, res, next) => {
+app.get('/api/ble/startpwrheartbeatled', (req, res, next) => {
     leds.power.heartbeat();
     res.json({status: true, result: true});
 });
-app.get("/api/stoppwrheartbeatled", (req, res, next) => {
+app.get('/api/ble/stoppwrheartbeatled', (req, res, next) => {
     leds.power.reset();
     res.json({status: true, result: true});
 });
-app.get("/api/startactheartbeatled", (req, res, next) => {
-
+app.get('/api/ble/startactheartbeatled', (req, res, next) => {
     leds.status.heartbeat();
     res.json({status: true, result: true});
 });
-app.get("/api/stopactheartbeatled", (req, res, next) => {
+app.get('/api/ble/stopactheartbeatled', (req, res, next) => {
     leds.status.reset();
     res.json({status: true, result: true});
+});
+app.get('/api/wifi/getCurrentConnections', (req, res, next) => {
+    wifi.getCurrentConnections((conn) => {
+	console.log(conn);
+	res.json({status: true, connections: JSON.stringify(conn)});
+    });
+});
+app.get('/api/wifi/scanwifiap', (req, res, next) => {
+    wifi.scan((list) => {
+	console.log(list);
+	res.json({status: true, connections: JSON.stringify(list)});
+    });
+});
+app.get('/api/wifi/connectwifi', (req, res, next) => {
+    let ssid = req.query.ssid,
+	passwd = req.query.passwd;
+    let out=wifi.connect(ssid, passwd);
+    res.json({status: out});
 });
 
 // establish Web Server(Doc)

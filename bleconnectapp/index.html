@@ -35,8 +35,11 @@
     </div>
 
     <script type="text/javascript">
-     let name = 'bleconndemo';
-     let uuid = {
+    let searchParams = new URLSearchParams(window.location.search);
+    let pwifi = 
+
+    let name = 'bleconndemo';
+    let uuid = {
          service: ('148c0888-eedc-4bed-b59e-9718382af1c0'.toLowerCase()),
          chara00: ('148c0888-eedc-4bed-b59e-9718382af1c1').toLowerCase()
      };
@@ -67,7 +70,7 @@
                  };
                  let timerId = setInterval(() => {
                      if(ip != null && port != null) {
-                         clearInterval(timerId);
+			 clearInterval(timerId);
                          var aref = document.createElement('a');
                          aref.href='http://'+ip + ':' + port + '/';
                          aref.innerHTML='Click to jump to management console.';
@@ -108,7 +111,17 @@
          }
      }
 
-
+/*
+  function getParameterByName(name, url) {
+if (!url) url = window.location.href;
+	 name = name.replace(/[\[\]]/g, "\\$&");
+	 var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	     results = regex.exec(url);
+	 if (!results) return null;
+	 if (!results[2]) return '';
+	 return decodeURIComponent(results[2].replace(/\+/g, " "));
+     }
+*/
     </script>
 
   </body>
