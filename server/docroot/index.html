@@ -10,27 +10,61 @@
     </style>
   </head>
   <body>
-    <h2>Heatbeat Blinking App</h2>
+    <h2>Setup Wi-Fi</h2>
+    <ul>
+      <li><button id="getwifilist">getList</button></li>
+      <li><button id="scanwifiap">scan</button></li>
+      <li><button id="setssidpw">set</button>
+	<ul>
+	  <li>SSID: <input type="text" id="ssid" value="sanbruno-station"></li>
+	  <li>PASSWD: <input type="text" id="passwd" value="creatingKANDOtogether"></li>
+	</ul>
+      </li>
+      
+    </ul>
+
+    <h2>Heatbeat Blink</h2>
     <ul>
       <li>PWR LED: <button id="pwrheartbeatled">Start</button></li>
       <li>ACT LED: <button id="actheartbeatled">Start</button></li>
     </ul>
+
 
     <script type="text/javascript">
      let state={
          act: false,
          pwr: false
      };
+     document.querySelector('#setssidpw').addEventListener('mousedown', () => {
+         let ssid=document.querySelector('#ssid').value;
+         let passwd=document.querySelector('#passwd').value;
+	 let path='/api/wifi/connectwifi?ssid=' + ssid + '&' + 'passwd='+passwd;
+         getData(path, (data) => {
+	     console.log(data);
+	 });
+     });
+     document.querySelector('#scanwifiap').addEventListener('mousedown', () => {
+	 let path='/api/wifi/scanwifiap';
+         getData(path, (data) => {
+	     console.log(data);
+	 });
+     });
+     document.querySelector('#getwifilist').addEventListener('mousedown', () => {
+	 let path='/api/wifi/getCurrentConnections';
+         getData(path, (data) => {
+	     console.log(data);
+	 });
+     });
      document.querySelector('#pwrheartbeatled').addEventListener('mousedown', () => {
          let path;
          switch(state.pwr) {
              case false:
                  state.pwr = true;
-                 path = '/api/startpwrheartbeatled';
+                 path = '/api/ble/startpwrheartbeatled';
                  break;
              case true:
                  state.pwr = false;
-                 path = '/api/stoppwrheartbeatled';
+                 path = '/api/ble/stoppwrheartbeatled';
                  break;
          }
          execBlink(path, '#pwrheartbeatled', state.pwr);
@@ -40,11 +74,11 @@
          switch(state.act) {
              case false:
                  state.act = true;
-                 path = '/api/startactheartbeatled';
+                 path = '/api/ble/startactheartbeatled';
                  break;
              case true:
                  state.act = false;
-                 path = '/api/stopactheartbeatled';
+                 path = '/api/ble/stopactheartbeatled';
                  break;
          }
          execBlink(path, '#actheartbeatled', state.act);
