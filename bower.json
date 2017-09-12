@@ -1,0 +1,17 @@
+{
+  "name": "bleconnectiondemo",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Ryoya Kawai <ryoya.kawai@gmail.com>"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ryoyakawai/bleconnectiondemo",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
