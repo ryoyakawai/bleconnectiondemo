@@ -16,9 +16,13 @@
         "npm-generator": "^0.1.5",
         "os": "^0.1.1",
         "pi-wifi": "^1.2.0",
+<<<<<<< HEAD
+        "rpi-leds": "0.0.3"
+=======
         "rpi-leds": "0.0.3",
         "text-encoding": "^0.6.4",
         "usb": "^1.2.0"
+>>>>>>> 3d187b443b2492627f66e7695a68d5e23cc9f915
     },
     "optionalDependencies": {},
     "keywords": [],
